@@ -25,14 +25,16 @@ else
 fi
 
 rm -f "${ZIP}"
-ditto -c -k --keepParent build/DockStat.app "${ZIP}"
+# No resource forks or extended attributes in the zip: otherwise some unzip tools add
+# hidden "._" files inside the app, which breaks its code signature.
+ditto -c -k --keepParent --norsrc --noextattr build/DockStat.app "${ZIP}"
 
 if [[ -n "${DEVELOPER_ID:-}" && -n "${NOTARY_PROFILE:-}" ]]; then
   echo "==> Notarizing (takes a few minutes)..."
   xcrun notarytool submit "${ZIP}" --keychain-profile "${NOTARY_PROFILE}" --wait
   xcrun stapler staple build/DockStat.app
   rm -f "${ZIP}"
-  ditto -c -k --keepParent build/DockStat.app "${ZIP}"
+  ditto -c -k --keepParent --norsrc --noextattr build/DockStat.app "${ZIP}"
 fi
 
 echo "==> Release ready: ${ZIP}"
