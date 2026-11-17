@@ -9,6 +9,8 @@ struct DetailsView: View {
     let onCustomize: () -> Void
     let onSettings: () -> Void
     let onQuit: () -> Void
+    /// false draws the header controls as plain icons (for still images and video renders).
+    var showsControls = true
 
     private var ordered: [StatKind] {
         let first = layout.stats(on: side)
@@ -30,6 +32,7 @@ struct DetailsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
+                if showsControls {
                 Button(action: onCustomize) {
                     Label("Customize", systemImage: "slider.horizontal.3")
                 }
@@ -47,6 +50,13 @@ struct DetailsView: View {
                 .buttonStyle(.borderless)
                 .controlSize(.small)
                 .help("Quit DockStat")
+                } else {
+                    Label("Customize", systemImage: "slider.horizontal.3")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                    Image(systemName: "gearshape").foregroundStyle(.secondary)
+                    Image(systemName: "power").foregroundStyle(.secondary)
+                }
             }
 
             HStack(alignment: .top, spacing: 10) {
